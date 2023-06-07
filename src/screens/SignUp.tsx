@@ -6,10 +6,30 @@ import BackgroundImg from '@assets/background.png';
 
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
+import { useState } from "react";
 
 export function SignUp() {
 
   const navigation = useNavigation();
+  const [name, setName] = useState('');
+  const [mail, setMail] = useState('');
+  const [password, setPassword] = useState('');
+
+  async function handleCreate() {
+    const response = await fetch('http://10.26.12.67:3333/users', {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        "name": name,
+        "email": mail,
+        "password": password
+      }),
+    }).then(response => response.json())
+    .then(data => console.log(data));
+  }
 
   function handleGoBack() {
     navigation.goBack();
@@ -44,20 +64,22 @@ export function SignUp() {
 
           <Input 
             placeholder="Nome"
+            onChangeText={setName}
           />
 
           <Input 
             placeholder="E-mail" 
             keyboardType="email-address"
             autoCapitalize="none"
-
+            onChangeText={setMail}
           />
           <Input 
             placeholder="Senha" 
             secureTextEntry
+            onChangeText={setPassword}
           />
 
-          <Button title="Criar e acessar" />
+          <Button title="Criar e acessar" onPress={handleCreate} />
         </Center>
         
         <Button 

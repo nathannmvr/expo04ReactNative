@@ -8,14 +8,34 @@ import BackgroundImg from '@assets/background.png';
 
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
+import { useState } from "react";
 
 export function SignIn() {
+
+  const [mail, setMail] = useState('');
+  const [password, setPassword] = useState('');
 
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
   function handleNewAccount() {
     navigation.navigate('signUp');
   }
+
+  async function handleLogin() {
+    const response = await fetch('http://10.26.12.67:3333/sessions', {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        "email": mail,
+        "password": password
+      }),
+    }).then(response => response.json())
+    .then(data => console.log(data.token));
+  }
+  
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
@@ -48,14 +68,15 @@ export function SignIn() {
             placeholder="E-mail" 
             keyboardType="email-address"
             autoCapitalize="none"
-
+            onChangeText={setMail}
           />
           <Input 
             placeholder="Senha" 
             secureTextEntry
+            onChangeText={setPassword}
           />
 
-          <Button title="Acessar" />
+          <Button title="Acessar" onPress={handleLogin} />
         </Center>
 
         <Center mt={24}>
