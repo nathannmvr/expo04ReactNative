@@ -1,6 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import { VStack, Image, Text, Center, Heading, ScrollView, HStack } from "native-base";
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes';
 
 import LogoSvg from '@assets/series.svg';
@@ -14,6 +16,7 @@ export function SignIn() {
 
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
+  const [token, setToken] = useState('');
 
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
@@ -33,9 +36,19 @@ export function SignIn() {
         "password": password
       }),
     }).then(response => response.json())
-    .then(data => console.log(data.token));
+    .then(data => {setToken});
+
+    return storeData(token);
   }
-  
+
+  const storeData = async (token: string) => {
+    try {
+      await AsyncStorage.setItem('token', token)
+    } catch (e) {
+      // saving error
+    }
+  }
+
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
